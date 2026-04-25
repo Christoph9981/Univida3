@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 3. Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // Auth-based role check
+    function isAdmin() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "ADMIN";
+    }
+
+    // 2. Validation Blueprints
+    function isValidUser(data) {
+      return data.keys().hasAll(['cedula', 'nombre', 'apellido', 'role']) &&
+             data.cedula is string && data.cedula.size() <= 20 &&
+             data.nombre is string && data.nombre.size() <= 100 &&
+             data.role in ['ADMIN', 'PATIENT'];
+    }
+
+    function isValidAppointment(data) {
+      return data.keys().hasAll(['patientId', 'date', 'time', 'status']) &&
+             data.patientId is string && data.patientId.size() <= 128 &&
+             data.status in ['Pendiente', 'Confirmada', 'Completada', 'Cancelada'];
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['fromId', 'toId', 'title', 'content', 'participants', 'createdAt']) &&
+             data.fromId is string && data.toId is string &&
+             data.title is string && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 5000 &&
+             data.participants is list && data.participants.size() >= 1;
+    }
+
+    // 1. Master Gate & Pillars
+    
+    // Profiles
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isSignedIn() && (isAdmin() || resource.data.role == "ADMIN" || resource.data.cedula == request.auth.token.email.replace("@univida.app", "")); 
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if (isSignedIn() && request.auth.uid == userId && incoming().cedula == existing().cedula) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Appointments
+    match /appointments/{appointmentId} {
+      allow list, get: if isSignedIn() && (resource.data.patientId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidAppointment(incoming()) && (incoming().patientId == request.auth.uid || isAdmin());
+      allow update: if isSignedIn() && (resource.data.patientId == request.auth.uid || isAdmin()) && isValidAppointment(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Lab Results
+    match /labResults/{resultId} {
+      allow list, get: if isSignedIn() && (resource.data.patientId == request.auth.uid || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Doctors
+    match /doctors/{doctorId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Services
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Messages
+    match /messages/{messageId} {
+      allow read: if isSignedIn() && (request.auth.uid in resource.data.participants || isAdmin());
+      allow create: if isSignedIn() && isValidMessage(incoming()) && (incoming().fromId == request.auth.uid || isAdmin());
+      allow update: if isSignedIn() && (request.auth.uid in resource.data.participants || isAdmin()) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow delete: if isAdmin();
+    }
+
+    // Config
+    match /config/main {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
