@@ -1,0 +1,161 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System users including patients and admins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cedula": { "type": "string" },
+        "nombre": { "type": "string" },
+        "apellido": { "type": "string" },
+        "telefono": { "type": "string" },
+        "seguro": { "type": "string" },
+        "role": { "type": "string", "enum": ["PATIENT", "ADMIN"] },
+        "position": { "type": "string" },
+        "fechaRegistro": { "type": "string" },
+        "permissions": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["cedula", "nombre", "apellido", "role"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Medical appointments",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "cedula": { "type": "string" },
+        "area": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pendiente", "Confirmada", "Completada", "Cancelada"] },
+        "seguro": { "type": "string" },
+        "telefono": { "type": "string" },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["patientId", "date", "time", "status"]
+    },
+    "LabResult": {
+      "title": "LabResult",
+      "description": "Medical laboratory results",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "cedula": { "type": "string" },
+        "code": { "type": "string" },
+        "date": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string", "enum": ["En proceso", "Disponible", "Entregado"] },
+        "fileUrl": { "type": "string" },
+        "observaciones": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["patientId", "code", "date", "status"]
+    },
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Medical professionals",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nombre": { "type": "string" },
+        "apellido": { "type": "string" },
+        "especialidad": { "type": "string" },
+        "telefono": { "type": "string" },
+        "cedula": { "type": "string" },
+        "consultorio": { "type": "string" },
+        "activo": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["nombre", "apellido", "especialidad", "cedula"]
+    },
+    "MedicalService": {
+      "title": "MedicalService",
+      "description": "Services offered by the center",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" },
+        "icon": { "type": "string" }
+      },
+      "required": ["title", "active"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "System messages sent by admins to patients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fromId": { "type": "string" },
+        "fromName": { "type": "string" },
+        "fromRole": { "type": "string" },
+        "toId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["fromId", "toId", "title", "content", "read", "createdAt"]
+    },
+    "AppConfig": {
+      "title": "AppConfig",
+      "description": "General application configuration",
+      "type": "object",
+      "properties": {
+        "nombreCentro": { "type": "string" },
+        "telefono": { "type": "string" },
+        "direccion": { "type": "string" },
+        "horarios": {
+          "type": "object",
+          "properties": {
+            "semana": { "type": "string" },
+            "sabado": { "type": "string" }
+          }
+        },
+        "institucional": { "type": "string" },
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "heroImage": { "type": "string" },
+        "aboutText": { "type": "string" },
+        "aboutImage": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Medical appointments"
+    },
+    "/labResults/{resultId}": {
+      "schema": "LabResult",
+      "description": "Laboratory results"
+    },
+    "/doctors/{doctorId}": {
+      "schema": "Doctor",
+      "description": "List of doctors"
+    },
+    "/services/{serviceId}": {
+      "schema": "MedicalService",
+      "description": "Medical services"
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "System messages"
+    },
+    "/config/main": {
+      "schema": "AppConfig",
+      "description": "Application settings"
+    }
+  }
+}
