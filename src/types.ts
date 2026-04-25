@@ -50,12 +50,38 @@ export interface LabResult {
   createdAt: string;
 }
 
+export interface ServicePrice {
+  ars: string;
+  precio: number;
+  cubierto: boolean;
+}
+
 export interface MedicalService {
   id: string;
   title: string;
   description: string;
   active: boolean;
   icon?: string;
+  prices?: ServicePrice[];
+}
+
+export interface CotizacionItem {
+  serviceId: string;
+  title: string;
+  precio: number;
+  cubierto: boolean;
+}
+
+export interface Cotizacion {
+  id: string;
+  patientName: string;
+  cedula: string;
+  ars: string;
+  items: CotizacionItem[];
+  subtotal: number;
+  descuentoARS: number;
+  total: number;
+  createdAt: string;
 }
 
 export interface AppConfig {
