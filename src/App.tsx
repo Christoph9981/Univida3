@@ -9,6 +9,7 @@ import { PatientDashboard } from './components/PatientViews';
 import { AdminLayout } from './components/AdminLayout';
 import { AdminDashboard, AdminPatients, AdminDoctors, AdminAppointments, AdminAnalytics, AdminConfig, AdminWelcomeCinematic, AdminMessages } from './components/AdminViews';
 import { AdminServices } from './components/AdminServices';
+import { AdminCotizacion } from './components/AdminCotizacion';
 
 const FloatingWhatsApp = () => (
   <motion.a
@@ -81,6 +82,7 @@ const MainLayout = () => {
         {adminView === 'patients' && <AdminPatients />}
         {adminView === 'doctors' && <AdminDoctors />}
         {adminView === 'appointments' && <AdminAppointments />}
+        {adminView === 'cotizacion' && <AdminCotizacion />}
         {adminView === 'analytics' && <AdminAnalytics />}
         {adminView === 'messages' && <AdminMessages />}
         {adminView === 'services' && <AdminServices />}
