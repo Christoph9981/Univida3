@@ -84,7 +84,8 @@ export const AdminLayout: React.FC<{
         { id: 'patients', label: 'Pacientes', icon: Users },
         { id: 'doctors', label: 'Doctores', icon: Stethoscope },
         { id: 'appointments', label: 'Citas', icon: Calendar },
-        { id: 'analytics', label: 'Analíticas', icon: FileText },
+        { id: 'cotizacion', label: 'Cotización', icon: FileText },
+        { id: 'analytics', label: 'Analíticas', icon: Database },
         { id: 'messages', label: 'Mensajes', icon: MessageSquare },
       ]
     },
