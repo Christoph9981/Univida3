@@ -85,6 +85,14 @@ export const PatientWelcomeCinematic = ({ user, onComplete }: { user: UserType, 
 
 export const AuthView = ({ setView }: { setView: (v: any) => void }) => {
   const { login, loginWithGoogle, registerPatient, registerAdmin, currentUser } = useApp();
+  
+  const formatCedula = (val: string) => {
+    const clean = val.replace(/\D/g, '');
+    let fmt = clean;
+    if (clean.length > 3) fmt = clean.slice(0, 3) + '-' + clean.slice(3);
+    if (clean.length > 10) fmt = fmt.slice(0, 11) + '-' + clean.slice(10, 11);
+    return fmt.slice(0, 13);
+  };
   const [isRegister, setIsRegister] = useState(false);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const [error, setError] = useState('');
@@ -278,7 +286,7 @@ export const AuthView = ({ setView }: { setView: (v: any) => void }) => {
                     <input 
                       required 
                       value={formData.cedula}
-                      onChange={e => setFormData({...formData, cedula: e.target.value})}
+                      onChange={e => setFormData({...formData, cedula: formatCedula(e.target.value)})}
                       type="text" 
                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 pl-12 focus:border-univida-green outline-none font-mono text-sm transition-all" 
                       placeholder={isAdminLogin ? "admin" : "000-0000000-0"} />
