@@ -21,6 +21,7 @@ export const AdminConfig = () => {
     nombre: '', apellido: '', cedula: '', password: '', telefono: '', 
     position: '', permissions: [] as AdminPermission[]
   });
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   
   const [tempConfig, setTempConfig] = useState(config);
 
@@ -129,7 +130,14 @@ export const AdminConfig = () => {
                         <div className="flex gap-2">
                           <button onClick={() => setEditingAdmin(admin)} className="p-2 text-slate-400 hover:text-univida-green transition-all"><Edit2 className="w-3.5 h-3.5" /></button>
                           {admin.id !== 'admin-1' && (
-                            <button onClick={() => deleteUser(admin.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                            deleteConfirmId === admin.id ? (
+                              <div className="flex gap-1 items-center bg-red-50 p-1 rounded-lg">
+                                <button onClick={() => { deleteUser(admin.id); setDeleteConfirmId(null); }} className="px-2 py-1 bg-red-500 text-white text-[9px] font-black uppercase rounded-md hover:bg-red-600 transition-all">Confirmar</button>
+                                <button onClick={() => setDeleteConfirmId(null)} className="p-1 text-slate-400 hover:text-slate-600"><XCircle className="w-3.5 h-3.5" /></button>
+                              </div>
+                            ) : (
+                              <button onClick={() => setDeleteConfirmId(admin.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                            )
                           )}
                         </div>
                       </td>
@@ -155,7 +163,14 @@ export const AdminConfig = () => {
                       <div className="flex gap-1">
                         <button onClick={() => setEditingAdmin(admin)} className="p-2 text-slate-400 hover:text-univida-green transition-all"><Edit2 className="w-4 h-4" /></button>
                         {admin.id !== 'admin-1' && (
-                          <button onClick={() => deleteUser(admin.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                          deleteConfirmId === admin.id ? (
+                            <div className="flex gap-1 items-center bg-red-50 p-1 rounded-lg">
+                              <button onClick={() => { deleteUser(admin.id); setDeleteConfirmId(null); }} className="px-2 py-1 bg-red-500 text-white text-[9px] font-black uppercase rounded-md">Confirmar</button>
+                              <button onClick={() => setDeleteConfirmId(null)} className="p-1 text-slate-400 hover:text-slate-600"><XCircle className="w-4 h-4" /></button>
+                            </div>
+                          ) : (
+                            <button onClick={() => setDeleteConfirmId(admin.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                          )
                         )}
                       </div>
                     </div>
@@ -500,6 +515,7 @@ export const AdminPatients = () => {
   const patients = users.filter(u => u.role === 'PATIENT');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingPatient, setEditingPatient] = useState<User | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const filtered = patients.filter(p => 
     p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -603,7 +619,14 @@ export const AdminPatients = () => {
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <button onClick={() => setEditingPatient(p)} className="p-2 text-slate-400 hover:text-univida-green hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"><Edit2 className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => deleteUser(p.id)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"><Trash2 className="w-3.5 h-3.5" /></button>
+                      {deleteConfirmId === p.id ? (
+                        <div className="flex gap-1 items-center bg-red-50 p-1 rounded-lg">
+                          <button onClick={() => { deleteUser(p.id); setDeleteConfirmId(null); }} className="px-2 py-1 bg-red-500 text-white text-[9px] font-black uppercase rounded-md hover:bg-red-600 transition-all">Confirmar</button>
+                          <button onClick={() => setDeleteConfirmId(null)} className="p-1 text-slate-400 hover:text-slate-600"><XCircle className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ) : (
+                        <button onClick={() => setDeleteConfirmId(p.id)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"><Trash2 className="w-3.5 h-3.5" /></button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -627,7 +650,14 @@ export const AdminPatients = () => {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => setEditingPatient(p)} className="p-3 bg-slate-50 text-slate-400 rounded-xl active:bg-univida-green/10 active:text-univida-green transition-all"><Edit2 className="w-4 h-4" /></button>
-                    <button onClick={() => deleteUser(p.id)} className="p-3 bg-slate-50 text-slate-400 rounded-xl active:bg-red-50 active:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    {deleteConfirmId === p.id ? (
+                      <div className="flex gap-1 items-center bg-red-50 p-1 rounded-xl">
+                        <button onClick={() => { deleteUser(p.id); setDeleteConfirmId(null); }} className="px-3 py-2 bg-red-500 text-white text-[9px] font-black uppercase rounded-lg">Sí</button>
+                        <button onClick={() => setDeleteConfirmId(null)} className="p-2 text-slate-400"><XCircle className="w-4 h-4" /></button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setDeleteConfirmId(p.id)} className="p-3 bg-slate-50 text-slate-400 rounded-xl active:bg-red-50 active:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    )}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
