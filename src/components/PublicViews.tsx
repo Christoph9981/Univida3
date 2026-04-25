@@ -339,6 +339,15 @@ export const ServicesSection = () => {
 
 export const AppointmentFormSection = () => {
   const { addAppointment, users, registerPatient, services } = useApp();
+  
+  const formatCedula = (val: string) => {
+    const clean = val.replace(/\D/g, '');
+    let fmt = clean;
+    if (clean.length > 3) fmt = clean.slice(0, 3) + '-' + clean.slice(3);
+    if (clean.length > 10) fmt = fmt.slice(0, 11) + '-' + clean.slice(10, 11);
+    return fmt.slice(0, 13);
+  };
+
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
      nombre: '', apellido: '', cedula: '', seguro: DOMINICAN_INSURANCES[0],
@@ -414,7 +423,7 @@ export const AppointmentFormSection = () => {
   };
 
   return (
-    <section className="py-16 sm:py-24 lg:py-32 bg-slate-50">
+    <section className="py-8 sm:py-12 lg:py-16 bg-slate-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
          <div className="grid lg:grid-cols-3 bg-white rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100">
             <div className="lg:col-span-1 bg-univida-dark p-8 sm:p-12 text-white flex flex-col justify-between">
@@ -461,7 +470,7 @@ export const AppointmentFormSection = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                      <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3">Cédula</label>
-                        <input required value={formData.cedula} onChange={e => setFormData({...formData, cedula: e.target.value})} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 sm:p-4 focus:border-univida-green outline-none text-sm font-mono" placeholder="000-0000000-0" />
+                        <input required value={formData.cedula} onChange={e => setFormData({...formData, cedula: formatCedula(e.target.value)})} type="text" className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 sm:p-4 focus:border-univida-green outline-none text-sm font-mono" placeholder="000-0000000-0" />
                      </div>
                      <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3">Teléfono / WhatsApp</label>
