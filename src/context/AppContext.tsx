@@ -41,6 +41,7 @@ interface AppContextType {
   updateUser: (id: string, updates: Partial<User>) => Promise<void>;
   updateLabResult: (id: string, updates: Partial<LabResult>) => Promise<void>;
   addService: (service: Partial<MedicalService>) => Promise<void>;
+  updateService: (id: string, updates: Partial<MedicalService>) => Promise<void>;
   deleteService: (id: string) => Promise<void>;
   addDoctor: (dr: Partial<Doctor>) => Promise<void>;
   updateDoctor: (id: string, updates: Partial<Doctor>) => Promise<void>;
@@ -350,6 +351,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const updateService = async (id: string, updates: Partial<MedicalService>) => {
+    await updateDoc(doc(db, 'services', id), updates);
+  };
+
   const deleteService = async (id: string) => {
     await deleteDoc(doc(db, 'services', id));
   };
@@ -394,7 +399,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       login, loginWithGoogle, logout, registerPatient, registerAdmin,
       addAppointment, updateAppointmentStatus,
       addLabResult, deleteLabResult, updateConfig, toggleService, deleteUser,
-      updateUser, updateLabResult, addService, deleteService,
+      updateUser, updateLabResult, addService, updateService, deleteService,
       addDoctor, updateDoctor, deleteDoctor,
       sendMessage, markMessageAsRead
     }}>
